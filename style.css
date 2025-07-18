@@ -1,0 +1,61 @@
+body {
+  font-family: 'Arial', sans-serif;
+  text-align: center;
+  background: #f2f2f2;
+  margin: 0;
+  padding: 20px;
+}
+
+.container {
+  max-width: 90%;
+  margin: auto;
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+input[type="file"] {
+  margin: 15px 0;
+}
+
+.canvas-container {
+  margin-top: 20px;
+  overflow: auto;
+}
+
+canvas {
+  border: 1px solid #ccc;
+  max-width: 100%;
+  height: auto;
+}
+
+button {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+footer {
+  margin-top: 40px;
+  font-size: 14px;
+  color: #666;
+}
+
+footer p {
+  margin: 0;
+}
