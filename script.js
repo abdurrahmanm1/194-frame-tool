@@ -1,124 +1,121 @@
-const canvas = document.getElementById("canvas");
-const ctx = canvas.getContext("2d");
-const upload = document.getElementById("upload");
-const downloadBtn = document.getElementById("download");
-
-const frame = new Image();
-frame.src = "frame.png"; // لازم ترفع الصورة باسم ده
-
+let canvas = document.getElementById("canvas");
+let ctx = canvas.getContext("2d");
 let img = new Image();
-let scale = 1, offsetX = 0, offsetY = 0;
-let dragging = false, lastX = 0, lastY = 0;
-let pinchStartDistance = 0, pinchStartScale = 1;
+let original = null;
+let frame = document.getElementById("frame");
+let dragging = false;
+let scale = 1, dx = 0, dy = 0, startX, startY;
 
-upload.addEventListener("change", (e) => {
-  const reader = new FileReader();
-  reader.onload = () => {
-    img.onload = () => {
-      resetTransform();
+document.getElementById("upload").onchange = function(e) {
+  let reader = new FileReader();
+  reader.onload = function(event) {
+    img.onload = function() {
+      scale = 1; dx = 0; dy = 0;
+      canvas.width = frame.width;
+      canvas.height = frame.height;
       draw();
+      original = ctx.getImageData(0, 0, canvas.width, canvas.height);
     };
-    img.src = reader.result;
+    img.src = event.target.result;
   };
   reader.readAsDataURL(e.target.files[0]);
-});
+};
 
-canvas.addEventListener("mousedown", (e) => {
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.save();
+  ctx.translate(dx, dy);
+  ctx.scale(scale, scale);
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+  ctx.restore();
+}
+
+canvas.addEventListener("mousedown", startDrag);
+canvas.addEventListener("mousemove", onDrag);
+canvas.addEventListener("mouseup", () => dragging = false);
+canvas.addEventListener("wheel", zoom);
+
+canvas.addEventListener("touchstart", startTouch, { passive: false });
+canvas.addEventListener("touchmove", onTouch, { passive: false });
+
+function startDrag(e) {
   dragging = true;
-  lastX = e.offsetX;
-  lastY = e.offsetY;
-});
+  startX = e.offsetX - dx;
+  startY = e.offsetY - dy;
+}
 
-canvas.addEventListener("mouseup", () => (dragging = false));
-canvas.addEventListener("mouseleave", () => (dragging = false));
-
-canvas.addEventListener("mousemove", (e) => {
+function onDrag(e) {
   if (!dragging) return;
-  offsetX += (e.offsetX - lastX);
-  offsetY += (e.offsetY - lastY);
-  lastX = e.offsetX;
-  lastY = e.offsetY;
+  dx = e.offsetX - startX;
+  dy = e.offsetY - startY;
   draw();
-});
+}
 
-canvas.addEventListener("wheel", (e) => {
-  const delta = -e.deltaY * 0.001;
-  scale += delta;
-  scale = Math.max(0.2, Math.min(scale, 5));
-  draw();
-});
-
-// 🌟 دعم اللمس للموبايلات
-canvas.addEventListener("touchstart", (e) => {
-  if (e.touches.length === 1) {
-    dragging = true;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-  } else if (e.touches.length === 2) {
-    pinchStartDistance = getDistance(e.touches);
-    pinchStartScale = scale;
-  }
-});
-
-canvas.addEventListener("touchmove", (e) => {
+function zoom(e) {
   e.preventDefault();
-  if (e.touches.length === 1 && dragging) {
-    const dx = e.touches[0].clientX - lastX;
-    const dy = e.touches[0].clientY - lastY;
-    offsetX += dx;
-    offsetY += dy;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
+  scale += e.deltaY * -0.001;
+  scale = Math.min(Math.max(0.2, scale), 3);
+  draw();
+}
+
+let lastDist = 0;
+function startTouch(e) {
+  if (e.touches.length == 2) lastDist = getDist(e);
+}
+
+function onTouch(e) {
+  if (e.touches.length == 2) {
+    let newDist = getDist(e);
+    scale *= newDist / lastDist;
+    scale = Math.min(Math.max(0.2, scale), 3);
+    lastDist = newDist;
     draw();
-  } else if (e.touches.length === 2) {
-    const newDistance = getDistance(e.touches);
-    const scaleFactor = newDistance / pinchStartDistance;
-    scale = Math.max(0.2, Math.min(pinchStartScale * scaleFactor, 5));
+  } else if (e.touches.length == 1) {
+    dx = e.touches[0].clientX - canvas.width / 2;
+    dy = e.touches[0].clientY - canvas.height / 2;
     draw();
   }
-}, { passive: false });
+}
 
-canvas.addEventListener("touchend", () => {
-  dragging = false;
-});
-
-function getDistance(touches) {
-  const dx = touches[0].clientX - touches[1].clientX;
-  const dy = touches[0].clientY - touches[1].clientY;
+function getDist(e) {
+  let dx = e.touches[0].clientX - e.touches[1].clientX;
+  let dy = e.touches[0].clientY - e.touches[1].clientY;
   return Math.sqrt(dx * dx + dy * dy);
 }
 
-downloadBtn.addEventListener("click", () => {
-  draw(true);
-  const link = document.createElement("a");
-  link.download = "framed.png";
-  link.href = canvas.toDataURL();
-  link.click();
-  draw(false);
-});
+function resetImage() {
+  dx = dy = 0; scale = 1;
+  draw();
+}
 
-function draw(finalDownload = false) {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  if (img.src) {
-    ctx.save();
-    ctx.translate(offsetX, offsetY);
-    ctx.scale(scale, scale);
-    ctx.drawImage(img, 0, 0);
-    ctx.restore();
-  }
-  if (frame.complete) {
-    if (finalDownload) {
-      ctx.globalAlpha = 1;
-    } else {
-      ctx.globalAlpha = 0.5;
-    }
-    ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-    ctx.globalAlpha = 1;
+function toggleBeforeAfter() {
+  if (original) {
+    ctx.putImageData(original, 0, 0);
+    setTimeout(draw, 1000);
   }
 }
 
-function resetTransform() {
-  scale = 1;
-  offsetX = 0;
-  offsetY = 0;
+function downloadImage() {
+  frame.style.opacity = 1;
+  draw();
+  setTimeout(() => {
+    let link = document.createElement("a");
+    link.download = "framed-photo.png";
+    link.href = canvas.toDataURL();
+    link.click();
+    frame.style.opacity = 0.7;
+  }, 100);
+}
+
+function shareWhatsApp() {
+  alert("انسخ الصورة يدويًا وشاركها على واتساب");
+}
+
+function shareInstagram() {
+  alert("انسخ الصورة يدويًا وشاركها على انستجرام");
+}
+
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href);
+  alert("تم نسخ الرابط");
 }
