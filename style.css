@@ -1,61 +1,62 @@
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  margin: 0;
-  padding: 20px;
-  background-color: #f1f1f1;
+  font-family: sans-serif;
+  background-color: #f2f2f2;
   text-align: center;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-  max-width: 700px;
-  margin: auto;
+  padding: 20px;
 }
 
 h1 {
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 24px;
+  margin-bottom: 5px;
 }
 
 .welcome {
-  color: #444;
-  margin-bottom: 20px;
-  font-size: 1.1em;
+  font-size: 18px;
+  color: #555;
+  margin-bottom: 15px;
 }
 
-.upload-btn, .download-btn {
+.upload-btn,
+.download-btn {
   display: inline-block;
-  padding: 14px 24px;
-  margin: 15px;
-  font-size: 16px;
+  padding: 12px 20px;
+  margin: 10px;
+  font-size: 18px;
   border: none;
   border-radius: 8px;
   cursor: pointer;
-  background-color: #007bff;
+  background-color: #005eff;
   color: white;
-  transition: 0.3s;
+  transition: background-color 0.3s;
 }
 
-.upload-btn:hover, .download-btn:hover {
-  background-color: #0056b3;
+.upload-btn:hover,
+.download-btn:hover {
+  background-color: #0040c1;
 }
 
-.canvas-wrapper {
-  margin: 30px auto;
-  background: #ffffff;
-  border: 2px solid #ccc;
-  width: fit-content;
-  border-radius: 10px;
-  overflow: hidden;
+.canvas-container {
+  margin: 20px auto;
+  width: 90%;
+  max-width: 500px;
+  position: relative;
 }
 
 canvas {
-  max-width: 100%;
+  width: 100%;
   height: auto;
-  cursor: grab;
+  touch-action: none;
+  background-color: white;
+  border-radius: 10px;
 }
 
 footer {
   margin-top: 30px;
-  font-size: 0.9em;
-  color: #555;
+  color: #777;
+  font-size: 14px;
 }
