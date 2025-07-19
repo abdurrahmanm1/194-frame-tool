@@ -3,97 +3,28 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Photo Frame Tool</title>
-  <link rel="stylesheet" href="style.css"/>
+  <title>194 Senior frame tool</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="container">
-    <h1>Upload your photo</h1>
-    <input type="file" id="upload" accept="image/*"/>
-    <div class="canvas-container">
-      <canvas id="canvas"></canvas>
+    <h1>194 Senior frame tool</h1>
+    <p class="welcome">أهلاً بيكم في أداة إضافة الفريم المخصص 🙌<br>حمّل صورتك، عدل مكانها تحت الفريم، وحمّل النتيجة!</p>
+
+    <label for="upload" class="upload-btn">📸 اختر صورتك</label>
+    <input type="file" id="upload" accept="image/*" hidden />
+
+    <div class="canvas-wrapper">
+      <canvas id="canvas" width="600" height="600"></canvas>
     </div>
-    <button id="download">Download</button>
+
+    <button id="download" class="download-btn">💾 تحميل الصورة النهائية</button>
+
+    <footer>
+      <p>design and site by: <strong>Abdurrahman Mahmoud</strong></p>
+    </footer>
   </div>
 
-  <footer>
-    <p>Design and Site by: <strong>Abdurrahman Mahmoud</strong></p>
-  </footer>
-
-  <script>
-    const upload = document.getElementById('upload');
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const frame = new Image();
-    frame.src = 'frame.png';
-
-    let img = new Image();
-    let scale = 1;
-    let offsetX = 0;
-    let offsetY = 0;
-    let dragging = false;
-    let startX, startY;
-
-    canvas.width = 800;
-    canvas.height = 800;
-
-    function draw() {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      if (img.src) {
-        ctx.save();
-        ctx.translate(offsetX, offsetY);
-        ctx.scale(scale, scale);
-        ctx.drawImage(img, 0, 0);
-        ctx.restore();
-      }
-      ctx.drawImage(frame, 0, 0, canvas.width, canvas.height);
-    }
-
-    upload.addEventListener('change', (e) => {
-      const file = e.target.files[0];
-      const reader = new FileReader();
-      reader.onload = function (event) {
-        img.onload = function () {
-          scale = 1;
-          offsetX = 0;
-          offsetY = 0;
-          draw();
-        };
-        img.src = event.target.result;
-      };
-      if (file) reader.readAsDataURL(file);
-    });
-
-    canvas.addEventListener('mousedown', (e) => {
-      dragging = true;
-      startX = e.offsetX - offsetX;
-      startY = e.offsetY - offsetY;
-    });
-
-    canvas.addEventListener('mousemove', (e) => {
-      if (dragging) {
-        offsetX = e.offsetX - startX;
-        offsetY = e.offsetY - startY;
-        draw();
-      }
-    });
-
-    canvas.addEventListener('mouseup', () => dragging = false);
-    canvas.addEventListener('mouseout', () => dragging = false);
-
-    canvas.addEventListener('wheel', (e) => {
-      e.preventDefault();
-      const zoom = e.deltaY < 0 ? 1.05 : 0.95;
-      scale *= zoom;
-      draw();
-    });
-
-    document.getElementById('download').addEventListener('click', () => {
-      const link = document.createElement('a');
-      link.download = 'framed-photo.png';
-      link.href = canvas.toDataURL();
-      link.click();
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
