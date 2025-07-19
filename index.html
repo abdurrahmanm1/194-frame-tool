@@ -1,41 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>194 Senior Frame Tool</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="style.css" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cairo+Play:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
   <div class="container">
     <h1>194 Senior Frame Tool</h1>
-    <p class="welcome">أهلاً بيك! حمّل صورتك، وعدّلها، وحمّلها بأحلى فريم ❤️</p>
+    <p class="welcome">أهلاً بيك! حمّل صورتك، حرّكها جوه الفريم، وحمّلها نهائي 🎓</p>
 
-    <div class="upload-section">
-      <input type="file" id="upload" accept="image/*">
-      <label for="upload" class="custom-button">📸 حمّل صورتك</label>
+    <label for="upload" class="btn upload-btn">📤 رفع الصورة</label>
+    <input type="file" id="upload" accept="image/*">
+
+    <div class="canvas-wrapper">
+      <canvas id="canvas" width="600" height="600"></canvas>
     </div>
 
-    <div class="canvas-container">
-      <canvas id="canvas"></canvas>
-      <img id="frame" src="frame.png" alt="Frame">
-      <div id="guide">+</div>
+    <div class="controls">
+      <button class="btn" id="resetBtn">🔄 Reset</button>
+      <button class="btn" id="beforeAfterBtn">👁️ Before/After</button>
+      <button class="btn" id="zoomInBtn">➕</button>
+      <button class="btn" id="zoomOutBtn">➖</button>
+      <button class="btn" id="downloadBtn">💾 Download</button>
     </div>
 
-    <div class="buttons">
-      <button onclick="resetImage()">🔄 Reset</button>
-      <button onclick="toggleBeforeAfter()">👁️ Before/After</button>
-      <button onclick="downloadImage()">💾 تحميل</button>
-    </div>
-
-    <div class="share">
-      <button onclick="shareWhatsApp()">📤 واتساب</button>
-      <button onclick="shareInstagram()">📸 انستجرام</button>
-      <button onclick="copyLink()">🔗 نسخ الرابط</button>
-    </div>
-
-    <footer>Design and site by: Abdurrahman Mahmoud</footer>
+    <footer>Design and site by: <strong>Abdurrahman Mahmoud</strong></footer>
   </div>
 
   <script src="script.js"></script>
